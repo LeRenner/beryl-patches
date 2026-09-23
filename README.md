@@ -1,4 +1,4 @@
-# Beryl Patches
+# Beryl Patches (Vibe coded, don't take this seriously)
 
 Patches for the GL.iNet Beryl AX (GL-MT3000).
 

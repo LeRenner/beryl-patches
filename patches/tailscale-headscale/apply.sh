@@ -36,7 +36,15 @@ fi
 
 echo "==> Backing up:"
 echo "    $TARGET"
-cp -p "$TARGET" "$BACKUP"
+
+if [ ! -f "$BACKUP" ]; then
+    echo "==> Creating original backup:"
+    echo "    $BACKUP"
+    cp -p "$TARGET" "$BACKUP"
+else
+    echo "==> Original backup already exists:"
+    echo "    $BACKUP"
+fi
 
 echo "==> Applying Headscale control server"
 

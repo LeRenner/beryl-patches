@@ -19,7 +19,7 @@ printf "%-30s " "$patch_name"
 if [ -f "/var/lib/beryl-patches/$patch_name/applied" ]; then
     echo "APPLIED"
 else
-    echo "not applied"
+    echo "NOT APPLIED"
 fi
 ```
 

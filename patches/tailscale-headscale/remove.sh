@@ -4,6 +4,7 @@ set -eu
 
 PATCH_NAME="tailscale-headscale"
 TARGET="/usr/bin/gl_tailscale"
+
 STATE_DIR="/var/lib/beryl-patches/$PATCH_NAME"
 BACKUP="$STATE_DIR/gl_tailscale.orig"
 
@@ -18,11 +19,13 @@ if [ ! -f "$BACKUP" ]; then
 echo "ERROR: Backup is missing:"
 echo "  $BACKUP"
 echo
-echo "Refusing to modify $TARGET."
+echo "Refusing to modify:"
+echo "  $TARGET"
 exit 1
 fi
 
-echo "==> Restoring original $TARGET"
+echo "==> Restoring:"
+echo "    $TARGET"
 
 cp -p "$BACKUP" "$TARGET"
 

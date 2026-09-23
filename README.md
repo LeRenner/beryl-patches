@@ -1,77 +1,73 @@
 # Beryl Patches
 
-Local patches for the GL.iNet Beryl AX (GL-MT3000).
+Patches for the GL.iNet Beryl AX (GL-MT3000).
 
-These patches modify vendor firmware files while keeping the original files backed up locally so that patches can be removed cleanly.
+These patches modify vendor firmware files while keeping backups of the
+original files on the router.
 
-## Repository layout
+## Current patches
+
+### tailscale-headscale
+
+Keeps GL.iNet's Tailscale integration pointed at the self-hosted Headscale
+control server instead of resetting to the public Tailscale control plane.
+
+Modified file:
 
 ```text
-.
-├── apply.sh
-├── remove.sh
-├── status.sh
-└── patches/
-    └── tailscale-headscale/
-        ├── apply.sh
-        └── remove.sh
+/usr/bin/gl_tailscale
 ```
 
-## Installing
+The patch changes:
 
-Clone the repository on the Beryl:
-
-```sh
-cd /root
-git clone <REPOSITORY_URL> beryl-patches
-cd beryl-patches
+```text
+tailscale up --reset --accept-routes ...
 ```
 
-Then:
+to:
+
+```text
+tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes ...
+```
+
+## Usage
+
+Apply all patches:
 
 ```sh
 ./apply.sh
 ```
 
-## Removing
+Remove all patches:
 
 ```sh
 ./remove.sh
 ```
 
-Individual patches can also be operated on directly:
-
-```sh
-./patches/tailscale-headscale/apply.sh
-./patches/tailscale-headscale/remove.sh
-```
-
-## Checking status
+Check patch status:
 
 ```sh
 ./status.sh
 ```
 
-## Updating
+## Backups
 
-From the router:
-
-```sh
-cd /root/beryl-patches
-git pull
-./status.sh
-```
-
-If a firmware update changed one of the files being patched, inspect the changes before applying the patch again.
-
-## Important
-
-The repository itself does not contain backups of the router's original files.
-
-Backups are stored locally on the router in:
+Original files are backed up on the router under:
 
 ```text
 /var/lib/beryl-patches/
 ```
 
-Do not delete this directory while patches are installed.
+The Git repository contains patch logic, not the router's original files.
+
+## Updating
+
+After updating the repository:
+
+```sh
+git pull
+./status.sh
+```
+
+Patches refuse to apply if the expected vendor firmware code is not found.
+This prevents accidentally modifying an incompatible firmware version.

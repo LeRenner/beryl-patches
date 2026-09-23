@@ -42,11 +42,10 @@ echo "==> Applying Headscale control server"
 
 awk -v expected="$EXPECTED" -v patched="$PATCHED" '
 {
-    if ($0 == expected) {
-        print patched
-    } else {
-        print
+    if (index($0, expected) > 0) {
+        sub(expected, patched)
     }
+    print
 }
 ' "$BACKUP" > "$TARGET"
 

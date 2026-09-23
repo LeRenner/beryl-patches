@@ -21,8 +21,8 @@ fi
 
 mkdir -p "$STATE_DIR"
 
-EXPECTED='tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false'
-PATCHED='tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false'
+EXPECTED='timeout 10 /usr/sbin/tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false > /dev/null'
+PATCHED='timeout 10 /usr/sbin/tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false > /dev/null'
 
 if ! grep -Fq "$EXPECTED" "$TARGET"; then
     echo "ERROR: Expected GL.iNet Tailscale command was not found."
@@ -33,9 +33,6 @@ if ! grep -Fq "$EXPECTED" "$TARGET"; then
     echo "Refusing to modify the file."
     exit 1
 fi
-
-echo "==> Backing up:"
-echo "    $TARGET"
 
 if [ ! -f "$BACKUP" ]; then
     echo "==> Creating original backup:"
@@ -55,7 +52,9 @@ awk -v expected="$EXPECTED" -v patched="$PATCHED" '
     }
     print
 }
-' "$BACKUP" > "$TARGET"
+' "$TARGET" > "$TARGET.tmp"
+
+mv "$TARGET.tmp" "$TARGET"
 
 if ! grep -Fq "$PATCHED" "$TARGET"; then
     echo "ERROR: Patch verification failed."

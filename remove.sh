@@ -13,13 +13,11 @@ for patch in $(find "$SCRIPT_DIR/patches"
 -name remove.sh 
 | sort -r); do
 
-```
 patch_name="$(basename "$(dirname "$patch")")"
 
 echo "==> Removing: $patch_name"
 "$patch"
 echo
-```
 
 done
 

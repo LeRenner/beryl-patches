@@ -51,10 +51,8 @@ if ! grep -Fq "$PATCHED" "$TARGET"; then
 echo "ERROR: Patch verification failed."
 echo "Restoring original file."
 
-```
 cp -p "$BACKUP" "$TARGET"
 exit 1
-```
 
 fi
 

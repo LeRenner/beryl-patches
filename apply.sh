@@ -10,13 +10,11 @@ echo
 for patch in "$SCRIPT_DIR"/patches/*/apply.sh; do
 [ -f "$patch" ] || continue
 
-```
 patch_name="$(basename "$(dirname "$patch")")"
 
 echo "==> Applying: $patch_name"
 "$patch"
 echo
-```
 
 done
 

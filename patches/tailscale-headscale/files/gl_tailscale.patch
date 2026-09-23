@@ -3,7 +3,7 @@
 @@ -328,7 +328,7 @@
          add_network_policy_route "guest"
          add_network_policy_route "iot"
-
+         
 -        timeout 10 /usr/sbin/tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
 +        timeout 10 /usr/sbin/tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
          apply_tailscale_mtu

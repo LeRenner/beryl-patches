@@ -5,12 +5,19 @@ PATCH_NAME="tailscale-headscale"
 TARGET="/usr/bin/gl_tailscale"
 STATE_DIR="/var/lib/beryl-patches/$PATCH_NAME"
 BACKUP="$STATE_DIR/gl_tailscale.orig"
+PATCH_FILE="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)/files/gl_tailscale.patch"
 
 echo "==> Patch: $PATCH_NAME"
 
 if [ ! -f "$TARGET" ]; then
     echo "ERROR: Target does not exist:"
     echo "  $TARGET"
+    exit 1
+fi
+
+if [ ! -f "$PATCH_FILE" ]; then
+    echo "ERROR: Patch file does not exist:"
+    echo "  $PATCH_FILE"
     exit 1
 fi
 
@@ -21,19 +28,6 @@ fi
 
 mkdir -p "$STATE_DIR"
 
-EXPECTED='timeout 10 /usr/sbin/tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false > /dev/null'
-PATCHED='timeout 10 /usr/sbin/tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false > /dev/null'
-
-if ! grep -Fq "$EXPECTED" "$TARGET"; then
-    echo "ERROR: Expected GL.iNet Tailscale command was not found."
-    echo
-    echo "The firmware may have changed, or the patch is already"
-    echo "applied in an unexpected form."
-    echo
-    echo "Refusing to modify the file."
-    exit 1
-fi
-
 if [ ! -f "$BACKUP" ]; then
     echo "==> Creating original backup:"
     echo "    $BACKUP"
@@ -43,20 +37,15 @@ else
     echo "    $BACKUP"
 fi
 
-echo "==> Applying Headscale control server"
+echo "==> Applying patch"
 
-awk -v expected="$EXPECTED" -v patched="$PATCHED" '
-{
-    if (index($0, expected) > 0) {
-        sub(expected, patched)
-    }
-    print
-}
-' "$TARGET" > "$TARGET.tmp"
+patch --dry-run "$TARGET" < "$PATCH_FILE"
 
-mv "$TARGET.tmp" "$TARGET"
+patch "$TARGET" < "$PATCH_FILE"
 
-if ! grep -Fq "$PATCHED" "$TARGET"; then
+echo "==> Verifying patch"
+
+if ! grep -Fq 'tailscale up --reset --login-server=https://headscale.pudim.xyz' "$TARGET"; then
     echo "ERROR: Patch verification failed."
     echo "Restoring original file."
     cp -p "$BACKUP" "$TARGET"

@@ -1,0 +1,11 @@
+--- /var/lib/beryl-patches/tailscale-headscale/gl_tailscale.orig	2026-09-01 22:57:16.000000000 -0300
++++ /tmp/gl_tailscale.modified	2026-09-23 02:06:54.899454739 -0300
+@@ -328,7 +328,7 @@
+         add_network_policy_route "guest"
+         add_network_policy_route "iot"
+
+-        timeout 10 /usr/sbin/tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
++        timeout 10 /usr/sbin/tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
+         apply_tailscale_mtu
+     else
+         /etc/init.d/tailscale stop

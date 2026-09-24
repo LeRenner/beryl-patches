@@ -1,6 +1,6 @@
 --- gl_tailscale
 +++ gl_tailscale
-@@ -328,7 +328,7 @@
+@@ -328,7 +328,8 @@
          add_network_policy_route "guest"
          add_network_policy_route "iot"
          

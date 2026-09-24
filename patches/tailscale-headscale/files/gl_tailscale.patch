@@ -6,6 +6,7 @@
          
 -        timeout 10 /usr/sbin/tailscale up --reset --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
 +        timeout 10 /usr/sbin/tailscale up --reset --login-server=https://headscale.pudim.xyz --accept-routes $param --timeout 3s --accept-dns=false > /dev/null
++        /usr/sbin/tailscale set --advertise-routes=10.0.0.0/24
          apply_tailscale_mtu
      else
          /etc/init.d/tailscale stop
